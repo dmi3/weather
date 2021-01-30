@@ -8,7 +8,7 @@ This "example" code used defunct query.yahooapis.com endpoint and don't work wit
 1. `mv credentials.h.SAMPLE credentials.h`
 2. Set up credentials and [OpenWeather API Key](https://openweathermap.org/appid) in `credentials.h`
     - ⚠ Note that for some time, new key will produce `401` error. Give it some time
-3. Modify <weater.ino>, replace `#include <GxGDEW027W3/GxGDEW027W3.h>` with value [corresponding your screen](https://github.com/Xinyuan-LilyGO/LilyGo-T5-Epaper-Series/blob/05de6cd912d2dcfff040acc548d45830d2559c33/examples/GxEPD_Example/GxEPD_Example.ino#L18-L35)
+3. Modify <weather.ino>, replace `#include <GxGDEW027W3/GxGDEW027W3.h>` with value [corresponding your screen](https://github.com/Xinyuan-LilyGO/LilyGo-T5-Epaper-Series/blob/05de6cd912d2dcfff040acc548d45830d2559c33/examples/GxEPD_Example/GxEPD_Example.ino#L18-L35)
 4. Install [arduino-esp32](https://github.com/espressif/arduino-esp32#installation-instructions)
     - ⚠ Make sure to use `1.0.2` as later has issues with WiFi
 5. Install dependencies:

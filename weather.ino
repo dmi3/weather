@@ -1,6 +1,6 @@
 #include <GxEPD.h>
-#include <GxGDEW027W3/GxGDEW027W3.h>    // 2.7" b/w
 // Use include depending on your screen type
+#include <GxGDEW027W3/GxGDEW027W3.h>    // 2.7" b/w
 // #include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r  
 // #include <GxGDE0213B72/GxGDE0213B72.h> // 2.13" b/w
 #include <Fonts/FreeMonoBold12pt7b.h>
@@ -29,6 +29,10 @@ typedef enum
 #define UPDATE_WEATHER_PROID  6 // Three hour update cycle
 RTC_DATA_ATTR int wakeupCount = 0;
 
+#if defined(_GxGDEW0154Z04_H_) || defined(_GxGDEW0213Z16_H_) || defined(_GxGDEW029Z10_H_) || defined(_GxGDEW027C44_H_)
+#define HAS_RED_COLOR
+#endif
+
 void wifiStart()
 {
   WiFi.disconnect(false,true);
@@ -48,6 +52,7 @@ void displayText(const String &str, int16_t y, uint8_t alignment)
   int16_t x = 0;
   int16_t x1, y1;
   uint16_t w, h;
+  
   display.setCursor(x, y);
   display.getTextBounds(str, x, y, &x1, &y1, &w, &h);
 
@@ -73,7 +78,8 @@ void displayWeather()
   int i;
   int16_t x, y;
   display.init();
-  display.eraseDisplay();
+  //display.eraseDisplay();
+  display.setRotation(2);
   display.setTextColor(GxEPD_BLACK);
   display.setFont(&FreeMonoBold12pt7b);
   display.setTextSize(1);
@@ -91,21 +97,33 @@ void displayWeather()
   display.setCursor(x, y);
   display.drawBitmap(x, y, wicon.img, wicon.w, wicon.h, GxEPD_BLACK);
 
-  String temp = getWeatherInfo().temp + "*" + getWeatherInfo().temperature;
+  String temp = getWeatherInfo().temp + " (" + getWeatherInfo().feels + ")" + "*" + getWeatherInfo().temperature;
+  String tempnext = getWeatherInfo().tempmin + " / " + getWeatherInfo().tempmax;
   String humidity = getWeatherInfo().humidity + "% ";
   String city = getWeatherInfo().city;
   String logo = getWeatherInfo().text;
+  String wind = getWeatherInfo().wind + getWeatherInfo().windu;
 
   y = wicon.h + 18;
   displayText(temp, y, RIGHT_ALIGNMENT);
 
   y = display.getCursorY() + 1;
+  displayText(tempnext, y, RIGHT_ALIGNMENT);
+
+  y = display.getCursorY() + 1;
   displayText(humidity, y, RIGHT_ALIGNMENT);
+
+  y = display.getCursorY() + 1;
+  displayText(wind, y, RIGHT_ALIGNMENT);
 
   y = display.getCursorY() + 1;
   displayText(city, y, RIGHT_ALIGNMENT);
 
-  y = display.getCursorY() + 25;
+  #if defined(HAS_RED_COLOR)
+      display.setTextColor(GxEPD_RED);
+  #endif
+
+  y = display.getCursorY() + 10;
   //display.setTextSize(2);
   displayText(logo, y, CENTER_ALIGNMENT);
 

@@ -85,7 +85,12 @@ const char* weather_0_main = weather_0["main"]; // "Clouds"
 _result.text  = (const char *)weather_0["description"]; // "broken clouds"
 _result.code = (int)weather_0["id"]; 
 _result.temperature = "C";
-_result.temp = String((float)main["temp"]);
+_result.temp = String((int)main["temp"]);
+_result.tempmin = String((int)main["temp_min"]);
+_result.tempmax = String((int)main["temp_max"]);
+_result.feels = String((int)main["feels_like"]);
+_result.wind = String((int)main["wind"]["speed"]);
+_result.windu = "m/s";
 _result.humidity =  String((int)main["humidity"]);
   _result.city =  (const char*)doc["name"];
 }
