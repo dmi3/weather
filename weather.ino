@@ -1,14 +1,19 @@
 #include <GxEPD.h>
-#include <GxGDE0213B72/GxGDE0213B72.h> // 2.13" b/w
+#include <GxGDEW027W3/GxGDEW027W3.h>    // 2.7" b/w
+// Use include depending on your screen type
+// #include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r  
+// #include <GxGDE0213B72/GxGDE0213B72.h> // 2.13" b/w
 #include <Fonts/FreeMonoBold12pt7b.h>
-#include <GxIO/GxIO_SPI/GxIO_SPI.cpp>
-#include <GxIO/GxIO.cpp>
+#include <GxIO/GxIO_SPI/GxIO_SPI.h>
+#include <GxIO/GxIO.h>
 #include <WiFi.h>
+#include "wifihelper.h"
 #include "openweathermap.h"
 #define ELINK_BUSY 4
 #define ELINK_RESET 16
 #define ELINK_DC 17
 #define ELINK_SS 5
+#include "credentials.h"
 GxIO_Class io(SPI, ELINK_SS, ELINK_DC, ELINK_RESET);
 GxEPD_Class display(io, ELINK_RESET, ELINK_BUSY);
 
@@ -26,36 +31,14 @@ RTC_DATA_ATTR int wakeupCount = 0;
 
 void wifiStart()
 {
-  //WiFi.begin("Martin Router King", "unavoltahovistounleon3");
+  WiFi.disconnect(false,true);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  int i = 20;
-  Serial.println("Try to Connect ...");
-  while (i--)
-  {
-    if (WiFi.status() == WL_CONNECTED)
-    {
-      Serial.println();
-      Serial.println("Connect Success");
-      break;
-    }
-    Serial.print(".");
+  Serial.println("Connecting to WiFi..");
+  while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
+    Serial.print(".");
   }
   
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    WiFi.mode(WIFI_STA);
-    Serial.println("SmartConfig Begin ...");
-    WiFi.beginSmartConfig();
-
-    while (!WiFi.smartConfigDone())
-    {
-      Serial.print(".");
-      delay(1000);
-    }
-    Serial.println("SmartConfig Success");
-    WiFi.setAutoConnect(true);
-  }
   Serial.printf("ssid : %s  passwd : %s\n", WiFi.SSID().c_str(), WiFi.psk().c_str());
   Serial.printf("IP Address : %s\n", WiFi.localIP().toString().c_str());
 }
@@ -150,6 +133,7 @@ void setup()
   else
   {
     // Get the weather for the first time and display it
+    scanNetworks();
     wifiStart();
     displayWeather();
   }
@@ -171,4 +155,3 @@ void loop()
 {
   //do nothing
 }
-

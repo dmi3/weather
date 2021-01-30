@@ -1,6 +1,7 @@
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
 #include "openweathermap.h"
+#include "credentials.h"
 #define _WURL(appid, ...) "GET /data/2.5/weather?q="#__VA_ARGS__"&units=metric&appid="#appid"  HTTP/1.0"
 #define WURL(appid, ...) _WURL(appid, __VA_ARGS__)
 WiFiClient http;
