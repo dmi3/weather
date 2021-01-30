@@ -1,5 +1,4 @@
-# MeTeo5
-[![Build Status](https://travis-ci.org/autoscatto/MeTeo5.svg?branch=develop)](https://travis-ci.org/autoscatto/MeTeo5)
+Forked from [autoscatto/MeTeo5](https://github.com/autoscatto/MeTeo5)
 
 MeTeo5 is a revision of https://github.com/lewisxhe/TTGO-T5/tree/master/TTGO-Yahoo-Weather
 This "example" code used defunct query.yahooapis.com endpoint and don't work with my **T5 v2.3_2.13** board. (thanks to https://github.com/lewisxhe/GxEPD for the working screen patch)
