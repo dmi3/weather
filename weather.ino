@@ -90,34 +90,22 @@ void displayWeather()
     delay(1000);
   }
 
-  i = getWeatherInfo().code.toInt();
+  i = getWeatherInfo().current_weather_0_id.toInt();
   x = display.width() / 2 - 50;
   y = 0;
   const Weather_Show_t wicon = get_icon(i);
   display.setCursor(x, y);
   display.drawBitmap(x, y, wicon.img, wicon.w, wicon.h, GxEPD_BLACK);
 
-  String temp = getWeatherInfo().temp + " (" + getWeatherInfo().feels + ")" + "*" + getWeatherInfo().temperature;
-  String tempnext = getWeatherInfo().tempmin + " / " + getWeatherInfo().tempmax;
-  String humidity = getWeatherInfo().humidity + "% ";
-  String city = getWeatherInfo().city;
-  String logo = getWeatherInfo().text;
-  String wind = getWeatherInfo().wind + getWeatherInfo().windu;
+  String temp = getWeatherInfo().current_temp + " (" + getWeatherInfo().current_feels_like + ")" + "*C";
+  String humidity = getWeatherInfo().current_humidity + "% " + getWeatherInfo().current_wind_speed + "m/s";
+  String logo = getWeatherInfo().current_weather_0_description;
 
   y = wicon.h + 18;
   displayText(temp, y, RIGHT_ALIGNMENT);
 
   y = display.getCursorY() + 1;
-  displayText(tempnext, y, RIGHT_ALIGNMENT);
-
-  y = display.getCursorY() + 1;
   displayText(humidity, y, RIGHT_ALIGNMENT);
-
-  y = display.getCursorY() + 1;
-  displayText(wind, y, RIGHT_ALIGNMENT);
-
-  y = display.getCursorY() + 1;
-  displayText(city, y, RIGHT_ALIGNMENT);
 
   #if defined(HAS_RED_COLOR)
       display.setTextColor(GxEPD_RED);
@@ -151,7 +139,7 @@ void setup()
   else
   {
     // Get the weather for the first time and display it
-    scanNetworks();
+    //scanNetworks();
     wifiStart();
     displayWeather();
   }

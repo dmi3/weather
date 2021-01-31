@@ -11,17 +11,12 @@ typedef struct
 
 typedef struct
 {
-  String temp;
-  String feels;
-  String tempmin;
-  String tempmax;
-  String city;
-  String humidity;
-  String temperature;
-  String code;
-  String text;
-  String wind;
-  String windu;
+  String current_temp;
+  String current_feels_like;
+  String current_humidity;
+  String current_wind_speed;
+  String current_weather_0_id;
+  String current_weather_0_description;
 } owth_api_t;
 
 //width:100,height:100
