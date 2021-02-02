@@ -102,7 +102,9 @@ static void parseJson(DynamicJsonDocument doc)
   _result.current_weather_0_description = (const char*) current_weather_0["description"]; // "broken clouds"
 //  const char* current_weather_0_icon = current_weather_0["icon"]; // "04d"
 
-//  for (JsonObject elem : doc["hourly"].as<JsonArray>()) {
+    int i = 0;
+
+  for (JsonObject elem : doc["hourly"].as<JsonArray>()) {
 //
 //    long dt = elem["dt"]; // 1612098000, 1612101600, 1612105200, 1612108800, 1612112400, 1612116000, ...
 //    float temp = elem["temp"]; // 272.15, 271.72, 270.65, 269.84, 269.17, 268.79, 268.19, 267.67, 267.75, ...
@@ -122,9 +124,11 @@ static void parseJson(DynamicJsonDocument doc)
 //    const char* weather_0_description = weather_0["description"]; // "broken clouds", "overcast clouds", ...
 //    const char* weather_0_icon = weather_0["icon"]; // "04d", "04d", "04n", "04n", "04n", "04n", "04n", ...
 //
-//    float pop = elem["pop"]; // 0.16, 0.13, 0.09, 0.06, 0.06, 0.04, 0, 0, 0, 0.06, 0.15, 0.23, 0.18, 0.1, ...
-//
-//  }
+      _result.hourly_pop[i] = elem["pop"]; // 0.16, 0.13, 0.09, 0.06, 0.06, 0.04, 0, 0, 0, 0.06, 0.15, 0.23, 0.18, 0.1, ...
+      i++;
+    }
+
+    
 //
 //  for (JsonObject elem : doc["alerts"].as<JsonArray>()) {
 //

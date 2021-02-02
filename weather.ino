@@ -115,6 +115,11 @@ void displayWeather()
   //display.setTextSize(2);
   displayText(logo, y, CENTER_ALIGNMENT);
 
+  for (int i = 0; i < 25; i++) {
+    float pop = getWeatherInfo().hourly_pop[i]*20;
+    display.fillRect(i*10, display.height() - pop, 10, pop, GxEPD_BLACK);
+  }
+
   display.update();
 }
 

@@ -17,6 +17,7 @@ typedef struct
   String current_wind_speed;
   String current_weather_0_id;
   String current_weather_0_description;
+  float hourly_pop[48];
 } owth_api_t;
 
 //width:100,height:100
