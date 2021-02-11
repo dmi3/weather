@@ -1,7 +1,7 @@
 #include <GxEPD.h>
 // Use include depending on your screen type
 #include <GxGDEW027W3/GxGDEW027W3.h>    // 2.7" b/w
-// #include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r  
+// #include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r
 // #include <GxGDE0213B72/GxGDE0213B72.h> // 2.13" b/w
 #include <Fonts/FreeMonoBold12pt7b.h>
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
@@ -100,6 +100,16 @@ void displayWeather()
   String temp = getWeatherInfo().current_temp + " (" + getWeatherInfo().current_feels_like + ")" + "*C";
   String humidity = getWeatherInfo().current_humidity + "% " + getWeatherInfo().current_wind_speed + "m/s";
   String logo = getWeatherInfo().current_weather_0_description;
+  bool alerts = getWeatherInfo().alerts;
+
+  if (alerts) {
+    display.setCursor(0, 0);
+    #if defined(HAS_RED_COLOR)
+      display.drawBitmap(0, 0, alert, 16, 16, GxEPD_RED);
+    #else  
+      display.drawBitmap(0, 0, alert, 16, 16, GxEPD_BLACK);
+    #endif
+  }
 
   y = wicon.h + 18;
   displayText(temp, y, RIGHT_ALIGNMENT);
@@ -115,6 +125,16 @@ void displayWeather()
   //display.setTextSize(2);
   displayText(logo, y, CENTER_ALIGNMENT);
 
+  y = display.getCursorY() + 20;
+
+  // Draw temperature for 25h
+  for (int i = 1; i < 26; i++) {
+    float temp1 = getWeatherInfo().hourly_temp[i-1]*2;
+    float temp2 = getWeatherInfo().hourly_temp[i]*2;
+    display.drawLine((i-1)*10, y+temp1, i*10, y+temp2, GxEPD_BLACK);
+  }  
+
+  // Draw  probability of precipitation for 25h
   for (int i = 0; i < 25; i++) {
     float pop = getWeatherInfo().hourly_pop[i]*20;
     display.fillRect(i*10, display.height() - pop, 10, pop, GxEPD_BLACK);

@@ -107,7 +107,7 @@ static void parseJson(DynamicJsonDocument doc)
   for (JsonObject elem : doc["hourly"].as<JsonArray>()) {
 //
 //    long dt = elem["dt"]; // 1612098000, 1612101600, 1612105200, 1612108800, 1612112400, 1612116000, ...
-//    float temp = elem["temp"]; // 272.15, 271.72, 270.65, 269.84, 269.17, 268.79, 268.19, 267.67, 267.75, ...
+      _result.hourly_temp[i] = elem["temp"]; // 272.15, 271.72, 270.65, 269.84, 269.17, 268.79, 268.19, 267.67, 267.75, ...
 //    float feels_like = elem["feels_like"]; // 265.51, 265.92, 265.24, 264.61, 264.22, 264.07, 263.38, ...
 //    int pressure = elem["pressure"]; // 996, 996, 996, 997, 997, 997, 997, 998, 998, 999, 999, 999, 999, ...
 //    int humidity = elem["humidity"]; // 69, 81, 89, 94, 95, 96, 96, 97, 97, 97, 97, 98, 98, 98, 98, 98, 97, ...
@@ -129,16 +129,20 @@ static void parseJson(DynamicJsonDocument doc)
     }
 
     
+    
 //
-//  for (JsonObject elem : doc["alerts"].as<JsonArray>()) {
+  for (JsonObject elem : doc["alerts"].as<JsonArray>()) {
 //
 //    const char* sender_name = elem["sender_name"]; // "Latvian Environment, Geology and Meteorology Centre", ...
 //    const char* event = elem["event"]; // "Yellow Snow-Ice Warning", "Orange Snow-Ice Warning"
 //    long start = elem["start"]; // 1612062000, 1611993600
 //    long end = elem["end"]; // 1612130340, 1612130340
 //    const char* description = elem["description"]; // " 31.01.2021 by day, due to continuous snowfall, ...
+      if (strstr(elem["event"], "Red")) {
+        _result.alerts=true;
+      }
 //
-//  }
+  }
 }
 
 bool getWeather()
