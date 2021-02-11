@@ -1,7 +1,7 @@
 #include <GxEPD.h>
 // Use include depending on your screen type
-#include <GxGDEW027W3/GxGDEW027W3.h>    // 2.7" b/w
-// #include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r
+// #include <GxGDEW027W3/GxGDEW027W3.h>    // 2.7" b/w
+#include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r
 // #include <GxGDE0213B72/GxGDE0213B72.h> // 2.13" b/w
 #include <Fonts/FreeMonoBold12pt7b.h>
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
@@ -159,6 +159,7 @@ void setup()
       wakeupCount = 0;
       wifiStart();
       displayWeather();
+      pingHealthchecks();
     }
   }
   else
@@ -167,6 +168,7 @@ void setup()
     //scanNetworks();
     wifiStart();
     displayWeather();
+    pingHealthchecks();
   }
 
   /*
