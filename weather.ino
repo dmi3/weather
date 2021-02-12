@@ -93,17 +93,19 @@ void displayWeather()
     delay(1000);
   }
 
-  i = getWeatherInfo().current_weather_0_id.toInt();
+  owth_api_t weather = getWeatherInfo();
+
+  i = weather.current_weather_0_id.toInt();
   x = display.width() / 2 - 50;
   y = 0;
   const Weather_Show_t wicon = get_icon(i);
   display.setCursor(x, y);
   display.drawBitmap(x, y, wicon.img, wicon.w, wicon.h, GxEPD_BLACK);
 
-  String temp = getWeatherInfo().current_temp + " (" + getWeatherInfo().current_feels_like + ")" + "*C";
-  String humidity = getWeatherInfo().current_humidity + "% " + getWeatherInfo().current_wind_speed + "m/s";
-  String logo = getWeatherInfo().current_weather_0_description;
-  bool alerts = getWeatherInfo().alerts;
+  String temp = weather.current_temp + " (" + weather.current_feels_like + ")" + "*C";
+  String humidity = weather.current_humidity + "% " + weather.current_wind_speed + "m/s";
+  String logo = weather.current_weather_0_description;
+  bool alerts = weather.alerts;
 
   if (alerts) {
     display.setCursor(0, 0);    
@@ -112,12 +114,7 @@ void displayWeather()
 
   y = wicon.h + 5;
 
-  #if defined(HAS_RED_COLOR)
-      display.setTextColor(GxEPD_RED);
-  #else
-      display.setTextColor(GxEPD_BLACK);      
-  #endif
-  
+  display.setTextColor(CONTRAST_COLOR);
   displayText(logo, y, CENTER_ALIGNMENT);
 
   display.setFont(&FreeMonoBold12pt7b);
@@ -130,7 +127,7 @@ void displayWeather()
 
   // Draw  probability of precipitation for 25h
   for (int i = 0; i < 25; i++) {
-    float pop = getWeatherInfo().hourly_pop[i]*20;
+    float pop = weather.hourly_pop[i]*20;
     display.fillRect(i*10, display.height() - pop, 10, pop, GxEPD_BLACK);
   }
 
@@ -138,10 +135,16 @@ void displayWeather()
 
   // Draw temperature for 25h
   for (int i = 1; i < 26; i++) {
-    float temp1 = getWeatherInfo().hourly_temp[i-1]*2;
-    float temp2 = getWeatherInfo().hourly_temp[i]*2;
+    float temp1 = weather.hourly_temp[i-1]*2;
+    float temp2 = weather.hourly_temp[i]*2;
     display.drawLine((i-1)*10, y-temp1, i*10, y-temp2, CONTRAST_COLOR);
-  }    
+  }
+
+  display.setTextColor(CONTRAST_COLOR);
+  display.setFont(&FreeMonoBold9pt7b);
+  displayText(String(weather.hourly_temp[0], 0), y-weather.hourly_temp[0]*2, LEFT_ALIGNMENT);
+  displayText(String(weather.hourly_temp[15], 0), y-weather.hourly_temp[15]*2, CENTER_ALIGNMENT);
+  displayText(String(weather.hourly_temp[25], 0), y-weather.hourly_temp[25]*2, RIGHT_ALIGNMENT);
 
   display.update();
 }
