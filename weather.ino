@@ -4,6 +4,7 @@
 #include <GxGDEW027C44/GxGDEW027C44.h>    // 2.7" b/w/r
 // #include <GxGDE0213B72/GxGDE0213B72.h> // 2.13" b/w
 #include <Fonts/FreeMonoBold12pt7b.h>
+#include <Fonts/FreeMonoBold9pt7b.h>
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
 #include <GxIO/GxIO.h>
 #include <WiFi.h>
@@ -83,11 +84,8 @@ void displayWeather()
   display.init();
   //display.eraseDisplay();
   display.setRotation(2);
-  display.setTextColor(GxEPD_BLACK);
-  display.setFont(&FreeMonoBold12pt7b);
+  display.setFont(&FreeMonoBold9pt7b);
   display.setTextSize(1);
-
-
 
   // Get weather information
   while (!getWeather())
@@ -112,19 +110,23 @@ void displayWeather()
     display.drawBitmap(0, 0, alert, 16, 16, CONTRAST_COLOR);
   }
 
-  y = wicon.h + 18;
+  y = wicon.h + 5;
+
+  #if defined(HAS_RED_COLOR)
+      display.setTextColor(GxEPD_RED);
+  #else
+      display.setTextColor(GxEPD_BLACK);      
+  #endif
+  
+  displayText(logo, y, CENTER_ALIGNMENT);
+
+  display.setFont(&FreeMonoBold12pt7b);
+  display.setTextColor(GxEPD_BLACK);
+  y = display.getCursorY() + 15;
   displayText(temp, y, RIGHT_ALIGNMENT);
 
   y = display.getCursorY() + 1;
   displayText(humidity, y, RIGHT_ALIGNMENT);
-
-  #if defined(HAS_RED_COLOR)
-      display.setTextColor(GxEPD_RED);
-  #endif
-
-  y = display.getCursorY() + 10;
-  //display.setTextSize(2);
-  displayText(logo, y, CENTER_ALIGNMENT);
 
   // Draw  probability of precipitation for 25h
   for (int i = 0; i < 25; i++) {
@@ -132,7 +134,7 @@ void displayWeather()
     display.fillRect(i*10, display.height() - pop, 10, pop, GxEPD_BLACK);
   }
 
-  y = display.getCursorY() + 5;
+  y = display.getCursorY() + 30;
 
   // Draw temperature for 25h
   for (int i = 1; i < 26; i++) {
