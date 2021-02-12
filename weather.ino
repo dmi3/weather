@@ -31,6 +31,9 @@ RTC_DATA_ATTR int wakeupCount = 0;
 
 #if defined(_GxGDEW0154Z04_H_) || defined(_GxGDEW0213Z16_H_) || defined(_GxGDEW029Z10_H_) || defined(_GxGDEW027C44_H_)
 #define HAS_RED_COLOR
+  #define CONTRAST_COLOR GxEPD_RED
+#else
+  #define CONTRAST_COLOR GxEPD_BLACK
 #endif
 
 void wifiStart()
@@ -84,6 +87,8 @@ void displayWeather()
   display.setFont(&FreeMonoBold12pt7b);
   display.setTextSize(1);
 
+
+
   // Get weather information
   while (!getWeather())
   {
@@ -103,12 +108,8 @@ void displayWeather()
   bool alerts = getWeatherInfo().alerts;
 
   if (alerts) {
-    display.setCursor(0, 0);
-    #if defined(HAS_RED_COLOR)
-      display.drawBitmap(0, 0, alert, 16, 16, GxEPD_RED);
-    #else  
-      display.drawBitmap(0, 0, alert, 16, 16, GxEPD_BLACK);
-    #endif
+    display.setCursor(0, 0);    
+    display.drawBitmap(0, 0, alert, 16, 16, CONTRAST_COLOR);
   }
 
   y = wicon.h + 18;
@@ -125,20 +126,20 @@ void displayWeather()
   //display.setTextSize(2);
   displayText(logo, y, CENTER_ALIGNMENT);
 
-  y = display.getCursorY() + 20;
-
-  // Draw temperature for 25h
-  for (int i = 1; i < 26; i++) {
-    float temp1 = getWeatherInfo().hourly_temp[i-1]*2;
-    float temp2 = getWeatherInfo().hourly_temp[i]*2;
-    display.drawLine((i-1)*10, y+temp1, i*10, y+temp2, GxEPD_BLACK);
-  }  
-
   // Draw  probability of precipitation for 25h
   for (int i = 0; i < 25; i++) {
     float pop = getWeatherInfo().hourly_pop[i]*20;
     display.fillRect(i*10, display.height() - pop, 10, pop, GxEPD_BLACK);
   }
+
+  y = display.getCursorY() + 5;
+
+  // Draw temperature for 25h
+  for (int i = 1; i < 26; i++) {
+    float temp1 = getWeatherInfo().hourly_temp[i-1]*2;
+    float temp2 = getWeatherInfo().hourly_temp[i]*2;
+    display.drawLine((i-1)*10, y-temp1, i*10, y-temp2, CONTRAST_COLOR);
+  }    
 
   display.update();
 }
