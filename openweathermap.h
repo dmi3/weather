@@ -154,5 +154,5 @@ const unsigned char alert[] PROGMEM = { 0x7,0xe0, 0x1f,0xf8, 0x3f,0xfc, 0x7e,0x7
 
 bool getWeather();
 const owth_api_t &getWeatherInfo();
-const Weather_Show_t get_icon(int code);
+const Weather_Show_t get_icon(String wcode);
 #endif

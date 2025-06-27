@@ -8,100 +8,35 @@ WiFiClient http;
 StaticJsonDocument<8192> jsonBuffer;
 static owth_api_t _result;
 
-const Weather_Show_t get_icon(int wcode){
-  //https://openweathermap.org/weather-conditions
-  switch (wcode) {
-  case 200:
-  case 201:
-  case 202:
-  case 210:
-  case 211:
-  case 212:
-  case 221:
-  case 230:
-  case 231:
-  case 232:
-  case 781:
-    return {0, 100, 100, tornado};
-    break;
-  case 300 ... 321:
-    return {9, 100, 100, drizzle};
-    break;
-  case 511:
-  case 771:
-    return {6, 100, 100, mixed_rain_and_sleet};
-    break;
-  case 500 ... 504:
-  case 520 ... 531:
-    return {11, 100, 100, showers};
-    break;
-  case 615:
-  case 616:
-    return {5, 100, 100, mixed_rain_and_snow};
-    break; 
-  case 600 ... 613:
-  case 620 ... 622:
-    return {13, 100, 100, snow_flurries};
-    break; 
-  case 701:
-  case 741:
-    return {21, 100, 100, foggy};
-    break;
-  case 711:
-  case 731: 
-  case 751:
-  case 761:
-  case 762:
-    return {19, 100, 100, dust};
-    break;
-  case 721: 
-    return {20, 100, 100, haze};
-    break;
-  case 800:
-    return {31, 100, 100, clear};
-    break;
-  case 801:
-  case 802: 
-    return {44, 100, 100, partly_cloudy};
-    break;
-  case 803:
-  case 804:
-    return {26, 100, 100, cloudy};
-  default:
-    return {48, 100, 0, not_available};
-    break;
-  }
-} 
-
-static void setWeatherId(const char* icon) {
-    if (strcmp(icon, "clear-day") == 0) {
-        _result.current_weather_0_id = 800;
-    } else if (strcmp(icon, "clear-night") == 0) {
-        _result.current_weather_0_id = 800;
-    } else if (strcmp(icon, "rain") == 0) {
-        _result.current_weather_0_id = 500;
-    } else if (strcmp(icon, "snow") == 0) {
-        _result.current_weather_0_id = 600;
-    } else if (strcmp(icon, "sleet") == 0) {
-        _result.current_weather_0_id = 620;
-    } else if (strcmp(icon, "wind") == 0) {
-        _result.current_weather_0_id = 900;
-    } else if (strcmp(icon, "fog") == 0) {
-        _result.current_weather_0_id = 701;
-    } else if (strcmp(icon, "cloudy") == 0) {
-        _result.current_weather_0_id = 802;
-    } else if (strcmp(icon, "partly-cloudy-day") == 0) {
-        _result.current_weather_0_id = 802;
-    } else if (strcmp(icon, "partly-cloudy-night") == 0) {
-        _result.current_weather_0_id = 802;
-    } else if (strcmp(icon, "thunderstorm") == 0) {
-        _result.current_weather_0_id = 200;
-    } else if (strcmp(icon, "hail") == 0) {
-        _result.current_weather_0_id = 900;
-    } else if (strcmp(icon, "mixed") == 0) {
-        _result.current_weather_0_id = 800;
+const Weather_Show_t get_icon(String wcode) {
+    if (wcode == "clear-day") {
+        return wth[31]; // clear
+    } else if (wcode == "clear-night") {
+        return wth[33]; // fair_night
+    } else if (wcode == "rain") {
+        return wth[11]; // showers
+    } else if (wcode == "snow") {
+        return wth[16]; // snow
+    } else if (wcode == "sleet") {
+        return wth[18]; // sleet
+    } else if (wcode == "wind") {
+        return wth[24]; // windy
+    } else if (wcode == "fog") {
+        return wth[21]; // foggy
+    } else if (wcode == "cloudy") {
+        return wth[26]; // cloudy
+    } else if (wcode == "partly-cloudy-day") {
+        return wth[30]; // partly_cloudy_day
+    } else if (wcode == "partly-cloudy-night") {
+        return wth[29]; // partly_cloudy_night
+    } else if (wcode == "thunderstorm") {
+        return wth[4]; // thunderstorms
+    } else if (wcode == "hail") {
+        return wth[17]; // hail
+    } else if (wcode == "mixed") {
+        return wth[5]; // mixed_rain_and_snow
     } else {
-        _result.current_weather_0_id = 999;
+        return wth[48]; // not_available for any unrecognized codes
     }
 }
 
@@ -112,10 +47,7 @@ static void parseJson(DynamicJsonDocument doc) {
     _result.current_feels_like = (int) current["apparentTemperature"];
     _result.current_humidity = (int)(current["humidity"].as<float>() * 100);
     _result.current_wind_speed = (int) current["windSpeed"];
-
-    const char* icon = current["icon"];
-    setWeatherId(icon);
-    
+    _result.current_weather_0_id = (const char*) current["icon"];
     _result.current_weather_0_description = (const char*) current["summary"];
 
     int i = 0;

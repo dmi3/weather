@@ -37,6 +37,12 @@ RTC_DATA_ATTR int wakeupCount = 0;
   #define CONTRAST_COLOR GxEPD_BLACK
 #endif
 
+int16_t currentTextColor; 
+void setTextColor(const int16_t color) {
+    currentTextColor = color;
+    display.setTextColor(color);
+}
+
 void wifiStart()
 {
   WiFi.disconnect(false,true);
@@ -74,12 +80,18 @@ void displayText(const String &str, int16_t y, uint8_t alignment)
   default:
     break;
   }
-  display.println(str);
+
+  x = display.getCursorX();
+  int16_t charWidth = w / str.length();
+  for (int16_t i = 0; i < str.length(); i++) {
+
+    display.drawChar(x + (i * charWidth), y, str[i], currentTextColor, GxEPD_WHITE, 1);
+  }
+  display.setCursor(0, y + h + 4);
 }
 
 void displayWeather()
 {
-  int i;
   int16_t x, y;
   display.init();
   //display.eraseDisplay();
@@ -90,15 +102,14 @@ void displayWeather()
   // Get weather information
   while (!getWeather())
   {
-    delay(1000);
+    delay(10000);
   }
 
   owth_api_t weather = getWeatherInfo();
 
-  i = weather.current_weather_0_id.toInt();
   x = display.width() / 2 - 50;
   y = 0;
-  const Weather_Show_t wicon = get_icon(i);
+  const Weather_Show_t wicon = get_icon(weather.current_weather_0_id);
   display.setCursor(x, y);
   display.drawBitmap(x, y, wicon.img, wicon.w, wicon.h, GxEPD_BLACK);
 
@@ -114,11 +125,11 @@ void displayWeather()
 
   y = wicon.h + 5;
 
-  display.setTextColor(CONTRAST_COLOR);
+  setTextColor(CONTRAST_COLOR);
   displayText(logo, y, CENTER_ALIGNMENT);
 
   display.setFont(&FreeMonoBold12pt7b);
-  display.setTextColor(GxEPD_BLACK);
+  setTextColor(GxEPD_BLACK);
   y = display.getCursorY() + 15;
   displayText(temp, y, RIGHT_ALIGNMENT);
 
@@ -140,7 +151,7 @@ void displayWeather()
     display.drawLine((i-1)*10, y-temp1, i*10, y-temp2, CONTRAST_COLOR);
   }
 
-  display.setTextColor(CONTRAST_COLOR);
+  setTextColor(CONTRAST_COLOR);
   display.setFont(&FreeMonoBold9pt7b);
   displayText(String(weather.hourly_temp[0], 0), y-weather.hourly_temp[0]*2, LEFT_ALIGNMENT);
   displayText(String(weather.hourly_temp[15], 0), y-weather.hourly_temp[15]*2, CENTER_ALIGNMENT);
