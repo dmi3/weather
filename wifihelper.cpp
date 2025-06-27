@@ -20,21 +20,7 @@ bool pingHealthchecks()
   https.println("Host: hc-ping.com");
   https.println("Connection: close");
  
-  if (https.println() == 0)
-  {
-    Serial.println("Failed to ping healthchecks");
-    https.stop();
-    return false;
-  }
-
-  https.readBytesUntil('\r', status, sizeof(status));
-  if (strcmp(status, "HTTP/1.1 200 OK") != 0)
-  {
-    Serial.print("Unexpected response from healthchecks: ");
-    Serial.println(status);
-    https.stop();
-    return false;
-  }  
+  https.stop();  
 }
 
 String translateEncryptionType(wifi_auth_mode_t encryptionType) {
