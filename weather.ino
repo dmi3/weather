@@ -9,7 +9,7 @@
 #include <GxIO/GxIO.h>
 #include <WiFi.h>
 #include "wifihelper.h"
-#include "openweathermap.h"
+#include "webclient.h"
 #define ELINK_BUSY 4
 #define ELINK_RESET 16
 #define ELINK_DC 17

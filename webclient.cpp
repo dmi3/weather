@@ -1,6 +1,6 @@
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
-#include "openweathermap.h"
+#include "webclient.h"
 #include "credentials.h"
 #define _WURL(appid, ...) "GET /forecast/"APPID"/"LAT","LON"?units=si&exclude=minutely,daily  HTTP/1.0"
 #define WURL(appid, ...) _WURL(__VA_ARGS__)
