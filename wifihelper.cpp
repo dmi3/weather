@@ -19,7 +19,15 @@ bool pingHealthchecks()
   https.println(URL);
   https.println("Host: hc-ping.com");
   https.println("Connection: close");
- 
+
+  if (https.println() == 0)
+  {
+    Serial.println("Failed to ping healthchecks");
+    https.stop();
+    return false;
+  }
+
+  https.readBytesUntil('\r', status, sizeof(status));   
   https.stop();  
 }
 

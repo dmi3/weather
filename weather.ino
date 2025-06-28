@@ -23,11 +23,12 @@ typedef enum
   RIGHT_ALIGNMENT = 0,
   LEFT_ALIGNMENT,
   CENTER_ALIGNMENT,
+  CURSOR_ALIGNMENT,
 } Text_alignment;
 
 #define uS_TO_S_FACTOR 1000000  // Conversion factor for micro seconds to seconds 
 #define TIME_TO_SLEEP 60 * 30   // Time ESP32 will go to sleep (in seconds) 
-#define UPDATE_WEATHER_PROID  6 // Three hour update cycle
+#define UPDATE_WEATHER_PROID  2 // One hour update cycle (2 of TIME_TO_SLEEP)
 RTC_DATA_ATTR int wakeupCount = 0;
 
 #if defined(_GxGDEW0154Z04_H_) || defined(_GxGDEW0213Z16_H_) || defined(_GxGDEW029Z10_H_) || defined(_GxGDEW027C44_H_)
@@ -62,6 +63,7 @@ void displayText(const String &str, int16_t y, uint8_t alignment)
   int16_t x = 0;
   int16_t x1, y1;
   uint16_t w, h;
+  int16_t prevX = display.getCursorX();
   
   display.setCursor(x, y);
   display.getTextBounds(str, x, y, &x1, &y1, &w, &h);
@@ -77,6 +79,9 @@ void displayText(const String &str, int16_t y, uint8_t alignment)
   case CENTER_ALIGNMENT:
     display.setCursor(display.width() / 2 - ((w + x1) / 2), y);
     break;
+  case CURSOR_ALIGNMENT:
+    display.setCursor(prevX, y);
+    break;    
   default:
     break;
   }
@@ -156,6 +161,16 @@ void displayWeather()
   displayText(String(weather.hourly_temp[0], 0), y-weather.hourly_temp[0]*2, LEFT_ALIGNMENT);
   displayText(String(weather.hourly_temp[15], 0), y-weather.hourly_temp[15]*2, CENTER_ALIGNMENT);
   displayText(String(weather.hourly_temp[25], 0), y-weather.hourly_temp[25]*2, RIGHT_ALIGNMENT);
+
+  if (weather.max_uv > 3) {
+    //display.fillCircle(circleX, circleY, radius, GxEPD_RED);
+    display.drawBitmap(display.width() - 40, 0, uvbg, 40, 40, CONTRAST_COLOR);
+
+    setTextColor(GxEPD_WHITE);
+    display.setFont(&FreeMonoBold12pt7b);
+    display.setCursor(display.width() - 42, 26);
+    displayText(String(weather.max_uv, 0), 26, CURSOR_ALIGNMENT);
+  }
 
   display.update();
 }

@@ -49,12 +49,16 @@ static void parseJson(DynamicJsonDocument doc) {
     _result.current_wind_speed = (int) current["windSpeed"];
     _result.current_weather_0_id = (const char*) current["icon"];
     _result.current_weather_0_description = (const char*) current["summary"];
+    _result.max_uv = 0;
 
     int i = 0;
     for (JsonObject elem : doc["hourly"]["data"].as<JsonArray>()) {
         _result.hourly_temp[i] = elem["temperature"];
         _result.hourly_pop[i] = elem["precipProbability"];
-         i++;        
+        if (elem["uvIndex"].as<float>() > _result.max_uv) {
+          _result.max_uv = elem["uvIndex"].as<float>();
+        }
+        i++;        
     }
 
     for (JsonObject elem : doc["alerts"].as<JsonArray>()) {
