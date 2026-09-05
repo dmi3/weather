@@ -17,6 +17,7 @@
     - ⚠ Make sure to use `master` version, not the latest release
     - [ArduinoJson 6.13.0](https://github.com/bblanchon/ArduinoJson)
     - [Adafruit-GFX-Library](https://github.com/adafruit/Adafruit-GFX-Library)
+6. Board to `ESP 32 Dev Module`
 
 ### Troubleshooting
 

@@ -1,10 +1,10 @@
-#include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
 #include "webclient.h"
 #include "credentials.h"
 #define _WURL(appid, ...) "GET /forecast/"APPID"/"LAT","LON"?units=si&exclude=minutely,daily  HTTP/1.0"
 #define WURL(appid, ...) _WURL(__VA_ARGS__)
-WiFiClient http;
+WiFiClientSecure http;
 StaticJsonDocument<8192> jsonBuffer;
 static owth_api_t _result;
 
@@ -70,7 +70,8 @@ static void parseJson(DynamicJsonDocument doc) {
 bool getWeather()
 {
   char status[32] = {0};
-  if (!http.connect("api.pirateweather.net", 80))
+  http.setInsecure();                                   
+  if (!http.connect("api.pirateweather.net", 443))     
   {
     Serial.println("Connection failed");
     http.stop();

@@ -107,7 +107,7 @@ void displayWeather()
   // Get weather information
   while (!getWeather())
   {
-    delay(10000);
+    delay(360000);
   }
 
   owth_api_t weather = getWeatherInfo();
